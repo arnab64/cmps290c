@@ -1,4 +1,6 @@
 import pandas as pd
+import json
+import codecs
 d2 = json.load(codecs.open("2008_01.txt", "r",encoding='utf-8', errors='ignore'))
 for line in d2:
     print line
