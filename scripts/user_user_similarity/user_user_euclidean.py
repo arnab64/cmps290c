@@ -24,6 +24,20 @@ class user_sim:
 		distx=math.sqrt(sum_sqrd)
 		return(distx)
 
+	def cosine(self,a,b):
+		arr_1=self.data[a][1:]
+		arr_2=self.data[b][1:]		
+		arr_12=arr_1*arr_2
+		arr_1s=arr_1*arr_1
+		arr_2s=arr_2*arr_2
+		lsum=np.sum(arr_1s)
+		rsum=np.sum(arr_2s)
+		usum=np.sum(arr_12)
+		lsqrt=math.sqrt(lsum)
+		rsqrt=math.sqrt(rsum)
+		distx=usum/(lsqrt*rsqrt)
+		return(distx)
+
 	def num_comments(self,threshold):
 		count_above=0
 		print("reached here!")
@@ -54,7 +68,7 @@ class user_sim:
 		    sys.stdout.flush()
 
 	def sort_user_distances(self):
-		ofile=open('user_distances.txt','w')
+		ofile=open('user_distances_cosine.txt','w')
 		self.user_user_distances.sort(key=lambda tup: tup[2])
 		for j in range(100):
 			itx=self.user_user_distances[j]
@@ -62,7 +76,6 @@ class user_sim:
 
 
 	def find_all_distances(self):				#finds the distance between each important user
-		
 		total=len(self.imp_users)
 		total_comparisons=(total*(total+1))/2
 		cnt=0
@@ -71,7 +84,8 @@ class user_sim:
 				perc=cnt/total_comparisons
 				p=self.user_rowid[self.imp_users[j]]
 				q=self.user_rowid[self.imp_users[k]]
-				scr=self.euclidean(p,q)
+				#scr=self.euclidean(p,q)
+				scr=self.cosine(p,q)
 				#strx=self.imp_users[j]+'	'+self.imp_users[k]+'	'+str(scr)+'\n'
 				self.user_user_distances.append((self.imp_users[j],self.imp_users[k],scr))
 				cnt+=1
