@@ -13,6 +13,7 @@ class user_sim:
 		self.user_rowid={}				#dictionary containing the row number of each user
 		self.user_comments={}			#dictionary containing the number of comments of every user above a certain threshold
 		self.imp_users=[]				#only stores the ids of users above 'threshold' number of comments
+		self.user_user_distances=[]
 
 	def euclidean(self,a,b):
 		arr_1=self.data[a][1:]
@@ -52,8 +53,16 @@ class user_sim:
 		    sys.stdout.write("[ %s ] %.2f%%" % (progress, percent * 100))
 		    sys.stdout.flush()
 
-	def find_all_distances(self):				#finds the distance between each important user
+	def sort_user_distances(self):
 		ofile=open('user_distances.txt','w')
+		self.user_user_distances.sort(key=lambda tup: tup[2])
+		for j in range(100):
+			itx=self.user_user_distances[j]
+			ofile.write(itx[0]+"	"+itx[1]+"	"+str(itx[2])+'\n')
+
+
+	def find_all_distances(self):				#finds the distance between each important user
+		
 		total=len(self.imp_users)
 		total_comparisons=(total*(total+1))/2
 		cnt=0
@@ -63,11 +72,11 @@ class user_sim:
 				p=self.user_rowid[self.imp_users[j]]
 				q=self.user_rowid[self.imp_users[k]]
 				scr=self.euclidean(p,q)
-				strx=self.imp_users[j]+'	'+self.imp_users[k]+'	'+str(scr)+'\n'
-				ofile.write(strx)
-				#print(perc,"%")
+				#strx=self.imp_users[j]+'	'+self.imp_users[k]+'	'+str(scr)+'\n'
+				self.user_user_distances.append((self.imp_users[j],self.imp_users[k],scr))
 				cnt+=1
 				self.drawProgressBar(perc)
+		self.sort_user_distances()
 
 	def control(self):
 		self.num_comments(50)
